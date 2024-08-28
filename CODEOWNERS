@@ -1,0 +1,6 @@
+# These owners will be the default owners/reviewers for everything in
+# the repo. Unless a later match takes precedence,
+# the entire @coiled/platform team will be requested for
+# review when someone opens a pull request in this repo.
+*       @coiled/platform
+
