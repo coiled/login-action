@@ -1,24 +1,46 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Coiled Login'
+description: 'GitHub Action to login to Coiled'
+author: 'Coiled'
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: 'log-in'
+  color: 'blue'
 
-# Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  token:
+    description: "Coiled user API token. Required. You can create a token at https://cloud.coiled.io/profile?createTokenDialog=1"
     required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
+  workspace:
+    description: "Coiled workspace. If not set, will default to user's default workspace."
+    required: false
+  server:
+    description: "Coiled server URL. If not set, will default to https://cloud.coiled.io ."
+    required: false
 
 runs:
-  using: node20
-  main: dist/index.js
+    using: 'composite'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install conda environment
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          cache-downloads-key: coiled-login-downloads-${{ runner.arch }}
+          cache-environment-key: coiled-login-env-${{ runner.arch }}
+          generate-run-shell: false
+          environment-name: coiled-login
+          create-args: >-
+            python=3.12
+            coiled=1.45.0
+
+      - name: Run coiled login
+        shell: bash
+        run: |
+          if [[ -n "${{ inputs.server }}" ]] && [[ -n "${{ inputs.workspace }}" ]] &&; then
+            coiled login --token ${{ inputs.token }} --workspace ${{ inputs.workspace }} --server ${{ inputs.server }}
+          elif [[ -n "${{ inputs.server }}" ]]; then
+            coiled login --token ${{ inputs.token }} --server ${{ inputs.server }}
+          elif [[ -n "${{ inputs.workspace }}" ]]; then
+            coiled login --token ${{ inputs.token }} --workspace ${{ inputs.workspace }}
+          else
+            coiled login --token ${{ inputs.token }}
+          fi
