@@ -30,24 +30,32 @@ runs:
       - uses: actions/checkout@v4
       - name: Install conda environment
         uses: mamba-org/setup-micromamba@v1
+        env:
+          PYTHON_VERSION: 3.12
+          COILED_VERSION: 1.45.0
         with:
-          cache-downloads-key: coiled-login-downloads-${{ runner.arch }}
-          cache-environment-key: coiled-login-env-${{ runner.arch }}
+          cache-downloads-key: coiled-login-downloads-${{ runner.arch }}-${{ envs.PYTHON_VERSION }}-${{ envs.COILED_VERSION }}
+          cache-environment-key: coiled-login-env-${{ runner.arch }}-${{ envs.PYTHON_VERSION }}-${{ envs.COILED_VERSION }}
           generate-run-shell: false
           environment-name: coiled-login
           create-args: >-
-            python=3.12
-            coiled=1.45.0
+            python=${{ envs.PYTHON_VERSION }}
+            coiled=${{ envs.COILED_VERSION }}
 
       - name: Run coiled login
         shell: bash
+        env:
+          INPUT_SERVER: ${{ inputs.server }}
+          INPUT_WORKSPACE: ${{ inputs.workspace }}
+          INPUT_TOKEN: ${{ inputs.token }}
         run: |
-          if [[ -n "${{ inputs.server }}" ]] && [[ -n "${{ inputs.workspace }}" ]]; then
-            micromamba run -n coiled-login coiled login --token ${{ inputs.token }} --workspace ${{ inputs.workspace }} --server ${{ inputs.server }}
-          elif [[ -n "${{ inputs.server }}" ]]; then
-            micromamba run -n coiled-login coiled login --token ${{ inputs.token }} --server ${{ inputs.server }}
-          elif [[ -n "${{ inputs.workspace }}" ]]; then
-            micromamba run -n coiled-login coiled login --token ${{ inputs.token }} --workspace ${{ inputs.workspace }}
-          else
-            micromamba run -n coiled-login coiled login --token ${{ inputs.token }}
-          fi
+          args=()
+          for input in token server workspace; do
+            var_name="INPUT_${input^^}"  # Convert input to uppercase
+            var_name=$(echo "$var_name" | tr '-' '_')  # Replace '-' with '_'
+            value="${!var_name}"  # Use variable indirection to get the value
+            if [[ -n "$value" ]]; then
+              args+=("--$input" "$value")
+            fi
+          done
+          micromamba run -n coiled-run coiled login "${args[@]}"
