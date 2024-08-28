@@ -34,13 +34,13 @@ runs:
           PYTHON_VERSION: 3.12
           COILED_VERSION: 1.45.0
         with:
-          cache-downloads-key: coiled-login-downloads-${{ runner.arch }}-${{ envs.PYTHON_VERSION }}-${{ envs.COILED_VERSION }}
-          cache-environment-key: coiled-login-env-${{ runner.arch }}-${{ envs.PYTHON_VERSION }}-${{ envs.COILED_VERSION }}
+          cache-downloads-key: coiled-login-downloads-${{ runner.arch }}-${{ env.PYTHON_VERSION }}-${{ env.COILED_VERSION }}
+          cache-environment-key: coiled-login-env-${{ runner.arch }}-${{ env.PYTHON_VERSION }}-${{ env.COILED_VERSION }}
           generate-run-shell: false
           environment-name: coiled-login
           create-args: >-
-            python=${{ envs.PYTHON_VERSION }}
-            coiled=${{ envs.COILED_VERSION }}
+            python=${{ env.PYTHON_VERSION }}
+            coiled=${{ env.COILED_VERSION }}
 
       - name: Run coiled login
         shell: bash
