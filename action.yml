@@ -35,12 +35,12 @@ runs:
       - name: Run coiled login
         shell: bash
         run: |
-          if [[ -n "${{ inputs.server }}" ]] && [[ -n "${{ inputs.workspace }}" ]] &&; then
-            coiled login --token ${{ inputs.token }} --workspace ${{ inputs.workspace }} --server ${{ inputs.server }}
+          if [[ -n "${{ inputs.server }}" ]] && [[ -n "${{ inputs.workspace }}" ]]; then
+            micromamba run -n coiled-login coiled login --token ${{ inputs.token }} --workspace ${{ inputs.workspace }} --server ${{ inputs.server }}
           elif [[ -n "${{ inputs.server }}" ]]; then
-            coiled login --token ${{ inputs.token }} --server ${{ inputs.server }}
+            micromamba run -n coiled-login coiled login --token ${{ inputs.token }} --server ${{ inputs.server }}
           elif [[ -n "${{ inputs.workspace }}" ]]; then
-            coiled login --token ${{ inputs.token }} --workspace ${{ inputs.workspace }}
+            micromamba run -n coiled-login coiled login --token ${{ inputs.token }} --workspace ${{ inputs.workspace }}
           else
-            coiled login --token ${{ inputs.token }}
+            micromamba run -n coiled-login coiled login --token ${{ inputs.token }}
           fi
