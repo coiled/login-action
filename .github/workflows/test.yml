@@ -19,5 +19,5 @@ jobs:
       - name: Coiled Login Action
         uses: ./
         with:
-          token: ${{ secrets.COILED_API_TOKEN }}
+          token: ${{ secrets.PROD_TEST_BOT_TOKEN }}
 

@@ -20,6 +20,13 @@ inputs:
 runs:
     using: 'composite'
     steps:
+      - name: Check if token is set
+        shell: bash
+        run: |
+          if [[ -z "${{ inputs.token }}" ]]; then
+            echo "Token is required."
+            exit 1
+          fi
       - uses: actions/checkout@v4
       - name: Install conda environment
         uses: mamba-org/setup-micromamba@v1
