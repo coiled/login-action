@@ -58,4 +58,4 @@ runs:
               args+=("--$input" "$value")
             fi
           done
-          micromamba run -n coiled-run coiled login "${args[@]}"
+          micromamba run -n coiled-login coiled login "${args[@]}"
