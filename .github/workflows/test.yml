@@ -16,8 +16,13 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Coiled Login Action
+      - name: Coiled Login Action Prod
         uses: ./
         with:
           token: ${{ secrets.PROD_TEST_BOT_TOKEN }}
 
+      - name: Coiled Login Action Staging
+        uses: ./
+        with:
+          token: ${{ secrets.STAGING_TEST_BOT_TOKEN }}
+          server: https://staging.coiledhq.com
